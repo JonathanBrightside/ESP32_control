@@ -224,6 +224,9 @@ extension GetItInjectableX on _i174.GetIt {
       dispose: (i) => i.dispose(),
     );
     gh.singleton<_i18.PageBuilder>(() => navigationModule.providePageBuilder());
+    gh.lazySingleton<_i663.ISecureStorage>(
+      () => _i629.SecureStorageImpl(gh<_i558.FlutterSecureStorage>()),
+    );
     gh.lazySingleton<_i632.IAppLogger>(
       () => loggingModule.provideLogger(),
       registerFor: {_development, _staging, _production},
@@ -232,18 +235,17 @@ extension GetItInjectableX on _i174.GetIt {
       () => errorModule.provideDevelopmentReporter(),
       registerFor: {_development},
     );
-    gh.lazySingleton<_i185.IFeatureFlagService>(
-      () => _i1025.FeatureFlagService(gh<_i632.IAppLogger>()),
+    gh.lazySingleton<_i354.IWebSocketManager>(
+      () => _i944.WebSocketManager(
+        gh<String>(instanceName: 'websocketBaseUrl'),
+        gh<_i632.IAppLogger>(),
+      ),
     );
-    gh.singleton<_i787.ICertificateService>(
-      () => _i55.CertificateService(gh<_i632.IAppLogger>()),
+    gh.factory<_i635.WatchSessionExpired>(
+      () => _i635.WatchSessionExpired(gh<_i65.ISessionManager>()),
     );
-    gh.lazySingleton<_i663.ISecureStorage>(
-      () => _i629.SecureStorageImpl(gh<_i558.FlutterSecureStorage>()),
-    );
-    gh.lazySingleton<_i449.IErrorReporter>(
-      () => errorModule.provideStagingReporter(gh<_i439.IDataFilter>()),
-      registerFor: {_staging, _production},
+    gh.lazySingleton<_i170.ITokenStorage>(
+      () => _i1047.TokenStorageImpl(gh<_i663.ISecureStorage>()),
     );
     gh.factory<_i873.ProfileFailureMapper>(
       () => _i873.ProfileFailureMapper(gh<_i184.FailureMapperRegistry>()),
@@ -264,19 +266,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i984.AuthFailureMessageMapper>(
       () => _i984.AuthFailureMessageMapper(gh<_i184.FailureMapperRegistry>()),
     );
-    gh.singleton<_i944.ICircuitBreaker>(
-      () => networkModule.provideCircuitBreaker(
-        gh<_i632.IAppLogger>(),
-        gh<_i448.CircuitBreakerConfig>(),
-      ),
+    gh.lazySingleton<_i449.IErrorReporter>(
+      () => errorModule.provideStagingReporter(gh<_i439.IDataFilter>()),
+      registerFor: {_staging, _production},
     );
-    gh.lazySingleton<_i329.AppMonitoringService>(
-      () => _i329.AppMonitoringService(
-        gh<_i632.IAppLogger>(),
-        gh<_i449.IErrorReporter>(),
-        gh<_i314.IPlatformInfo>(),
-        gh<_i752.IMonitoringInitializer>(),
-      ),
+    gh.singleton<_i787.ICertificateService>(
+      () => _i55.CertificateService(gh<_i632.IAppLogger>()),
+    );
+    gh.lazySingleton<_i185.IFeatureFlagService>(
+      () => _i1025.FeatureFlagService(gh<_i632.IAppLogger>()),
     );
     gh.lazySingleton<_i313.FailureMessageService>(
       () => _i313.FailureMessageService(
@@ -284,16 +282,10 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i632.IAppLogger>(),
       ),
     );
-    gh.factory<_i635.WatchSessionExpired>(
-      () => _i635.WatchSessionExpired(gh<_i65.ISessionManager>()),
-    );
-    gh.lazySingleton<_i170.ITokenStorage>(
-      () => _i1047.TokenStorageImpl(gh<_i663.ISecureStorage>()),
-    );
-    gh.lazySingleton<_i354.IWebSocketManager>(
-      () => _i944.WebSocketManager(
-        gh<String>(instanceName: 'websocketBaseUrl'),
+    gh.singleton<_i944.ICircuitBreaker>(
+      () => networkModule.provideCircuitBreaker(
         gh<_i632.IAppLogger>(),
+        gh<_i448.CircuitBreakerConfig>(),
       ),
     );
     gh.singleton<_i331.BlocObserver>(
@@ -303,6 +295,22 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i287.AppErrorHandlingService(
         gh<_i632.IAppLogger>(),
         gh<_i449.IErrorReporter>(),
+      ),
+    );
+    gh.lazySingleton<_i394.IAuthWebSocketDataSource>(
+      () => _i394.AuthWebSocketDataSource(
+        gh<_i354.IWebSocketManager>(),
+        gh<_i170.ITokenStorage>(),
+        gh<_i533.ITokenRefreshNotifier>(),
+        gh<_i632.IAppLogger>(),
+      ),
+    );
+    gh.lazySingleton<_i329.AppMonitoringService>(
+      () => _i329.AppMonitoringService(
+        gh<_i632.IAppLogger>(),
+        gh<_i449.IErrorReporter>(),
+        gh<_i314.IPlatformInfo>(),
+        gh<_i752.IMonitoringInitializer>(),
       ),
     );
     gh.singleton<_i31.ChopperClient>(
@@ -323,27 +331,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i927.ProfileApiService>(
       () => _i927.ProfileApiService.create(gh<_i31.ChopperClient>()),
     );
-    gh.lazySingleton<_i394.IAuthWebSocketDataSource>(
-      () => _i394.AuthWebSocketDataSource(
-        gh<_i354.IWebSocketManager>(),
-        gh<_i170.ITokenStorage>(),
-        gh<_i533.ITokenRefreshNotifier>(),
-        gh<_i632.IAppLogger>(),
-      ),
-    );
-    gh.lazySingleton<_i937.IUserProfileRemoteDataSource>(
-      () =>
-          _i937.UserProfileRemoteDataSourceImpl(gh<_i927.ProfileApiService>()),
-    );
     gh.lazySingleton<_i737.IAuthRemoteDataSource>(
       () => _i737.AuthRemoteDataSourceImpl(gh<_i986.AuthApiService>()),
-    );
-    gh.lazySingleton<_i148.IUserProfileRepository>(
-      () => _i45.UserProfileRepositoryImpl(
-        gh<_i937.IUserProfileRemoteDataSource>(),
-        gh<_i1007.ExceptionHandler>(),
-        gh<_i458.ProfileExceptionMapper>(),
-      ),
     );
     gh.lazySingleton<_i870.IAuthRepository>(
       () => _i889.AuthRepositoryImpl(
@@ -352,6 +341,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i170.ITokenStorage>(),
         gh<_i1007.ExceptionHandler>(),
         gh<_i161.AuthExceptionMapper>(),
+      ),
+    );
+    gh.factory<_i772.UserRegistrationService>(
+      () => _i772.UserRegistrationService(
+        gh<_i870.IAuthRepository>(),
+        gh<_i696.IEventDispatcher>(),
       ),
     );
     gh.factory<_i12.CheckUserExists>(
@@ -364,21 +359,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i266.WatchAuthChanges>(
       () => _i266.WatchAuthChanges(gh<_i870.IAuthRepository>()),
     );
-    gh.factory<_i0.GetProfile>(
-      () => _i0.GetProfile(gh<_i148.IUserProfileRepository>()),
-    );
-    gh.factory<_i772.UserRegistrationService>(
-      () => _i772.UserRegistrationService(
-        gh<_i870.IAuthRepository>(),
-        gh<_i696.IEventDispatcher>(),
-      ),
-    );
-    gh.factory<_i482.Register>(
-      () => _i482.Register(gh<_i772.UserRegistrationService>()),
-    );
-    gh.factory<_i493.ProfileBloc>(
+    gh.lazySingleton<_i937.IUserProfileRemoteDataSource>(
       () =>
-          _i493.ProfileBloc(gh<_i0.GetProfile>(), gh<_i696.IEventDispatcher>()),
+          _i937.UserProfileRemoteDataSourceImpl(gh<_i927.ProfileApiService>()),
     );
     gh.factory<_i23.GetCurrentUser>(
       () => _i23.GetCurrentUser(
@@ -391,6 +374,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i870.IAuthRepository>(),
         gh<_i696.IEventDispatcher>(),
       ),
+    );
+    gh.factory<_i482.Register>(
+      () => _i482.Register(gh<_i772.UserRegistrationService>()),
     );
     gh.factory<_i55.AuthBloc>(
       () => _i55.AuthBloc(
@@ -413,8 +399,22 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i247.AuthChangeNotifier>(),
       ),
     );
+    gh.lazySingleton<_i148.IUserProfileRepository>(
+      () => _i45.UserProfileRepositoryImpl(
+        gh<_i937.IUserProfileRemoteDataSource>(),
+        gh<_i1007.ExceptionHandler>(),
+        gh<_i458.ProfileExceptionMapper>(),
+      ),
+    );
+    gh.factory<_i0.GetProfile>(
+      () => _i0.GetProfile(gh<_i148.IUserProfileRepository>()),
+    );
     gh.singleton<_i583.GoRouter>(
       () => navigationModule.provideGoRouter(gh<_i954.AppRouter>()),
+    );
+    gh.factory<_i493.ProfileBloc>(
+      () =>
+          _i493.ProfileBloc(gh<_i0.GetProfile>(), gh<_i696.IEventDispatcher>()),
     );
     gh.lazySingleton<_i176.INavigationTrackingService>(
       () => _i122.NavigationTrackingService(gh<_i583.GoRouter>()),
@@ -426,6 +426,16 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i632.IAppLogger>(),
       ),
       dispose: (i) => i.dispose(),
+    );
+    gh.singleton<_i715.BootstrapService>(
+      () => _i715.BootstrapService(
+        gh<_i67.HydratedStorage>(),
+        gh<_i67.BlocObserver>(),
+        gh<_i329.AppMonitoringService>(),
+        gh<_i287.AppErrorHandlingService>(),
+        gh<_i10.AppNavigationLoggingService>(),
+        gh<_i787.ICertificateService>(),
+      ),
     );
     gh.factoryParam<_i508.App, _i409.Key?, dynamic>(
       (key, _) => _i508.App(
@@ -439,16 +449,6 @@ extension GetItInjectableX on _i174.GetIt {
         failureMessageService: gh<_i313.FailureMessageService>(),
         appTheme: gh<_i238.AppTheme>(),
         key: key,
-      ),
-    );
-    gh.singleton<_i715.BootstrapService>(
-      () => _i715.BootstrapService(
-        gh<_i67.HydratedStorage>(),
-        gh<_i67.BlocObserver>(),
-        gh<_i329.AppMonitoringService>(),
-        gh<_i287.AppErrorHandlingService>(),
-        gh<_i10.AppNavigationLoggingService>(),
-        gh<_i787.ICertificateService>(),
       ),
     );
     return this;
